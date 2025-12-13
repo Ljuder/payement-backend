@@ -70,7 +70,7 @@ cd payment-backend</code></pre>
 <h3>Installer les dépendances</h3>
 <pre><code>npm install</code></pre>
 <h4>(Pour Prisma)</h4>
-<pre><code>npm install @prisma/client@6 /n
+<pre><code>npm install @prisma/client@6
 npm install -D prisma@6</code></pre>
 
 <h3>Configuration</h3>
