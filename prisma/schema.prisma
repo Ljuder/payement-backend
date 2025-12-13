@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+datasource db {
+provider = "sqlite"
+url = env("DATABASE_URL")
+}
+
+
+generator client {
+provider = "prisma-client-js"
+output   = "../node_modules/.prisma/client"
+}
+
+
+enum Role {
+USER
+OWNER
+TREASURER
+ADMIN
+}
+
+
+model User {
+id Int @id @default(autoincrement())
+identifiant String @unique
+fams String @default("0")
+proms String @default("an15")
+password String
+role Role @default(USER)
+balance Float @default(0)
+shops Shop[]
+purchases Purchase[]
+refreshToken RefreshToken[]
+transaction Transaction[]
+}
+
+
+model Shop {
+id Int @id @default(autoincrement())
+name String //@unique
+owner User? @relation(fields: [ownerId], references: [id])
+ownerId Int?
+products Product[]
+purchases Purchase[]
+categories Categories[]
+isDeleted Boolean @default(false)
+}
+
+
+model Product {
+id Int @id @default(autoincrement())
+name String
+price Float
+shop Shop @relation(fields: [shopId], references: [id])
+shopId Int
+category Categories @relation(fields: [categoryId], references: [id])
+categoryId Int
+purchases Purchase[]
+isDeleted Boolean @default(false)
+}
+
+
+model Purchase {
+id Int @id @default(autoincrement())
+user User @relation(fields: [userId], references: [id])
+userId Int
+product Product @relation(fields: [productId], references: [id])
+productId Int
+shop Shop @relation(fields: [shopId], references: [id])
+shopId Int
+amount Float
+totalPrice Float
+createdAt DateTime @default(now())
+}
+
+model Transaction {
+id Int @id @default(autoincrement())
+user User @relation(fields: [userId], references: [id])
+userId Int
+type String
+typeSource String
+amount Float
+createdAt DateTime @default(now())
+}
+
+model Categories {
+id Int @id @default(autoincrement())
+catName String
+shop Shop @relation(fields: [shopId], references: [id])
+shopId Int
+products Product[]
+isDeleted Boolean @default(false)
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
