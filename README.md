@@ -5,7 +5,7 @@
 </head>
 <body>
 
-<h1>Payment Backend</h1>
+<h1>Backend pour Application de Payement Gadzarique</h1>
 
 <p>
 Backend Node.js pour une plateforme de paiement interne avec gestion d'utilisateurs,
