@@ -77,10 +77,9 @@ npm install -D prisma@6</code></pre>
 <pre><code>cp .env.example .env</code></pre>
 
 <p>Exemple de variables d'environnement :</p>
-<pre><code>PORT=5050
-DATABASE_URL=postgresql://user:password@localhost:5432/payment
-JWT_SECRET=change_me
-JWT_REFRESH_SECRET=change_me_too
+<pre><code>DATABASE_URL="file:./prisma/dev.db"
+JWT_SECRET=secret1
+REFRESH_JWT_SECRET=secret2
 SUMUP_CLIENT_ID=your_sumup_client_id
 SUMUP_CLIENT_SECRET=your_sumup_client_secret
 SUMUP_ENV=sandbox</code></pre>
