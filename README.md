@@ -2,7 +2,6 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Payment Backend</title>
 </head>
 <body>
 
@@ -46,7 +45,7 @@ de rôles, de magasins, de produits et intégration d'un service de paiement ext
   <li>Node.js</li>
   <li>Express.js</li>
   <li>Prisma ORM</li>
-  <li>PostgreSQL</li>
+  <li>SQLite</li>
   <li>JWT (access token et refresh token)</li>
   <li>SumUp API (sandbox)</li>
 </ul>
@@ -59,7 +58,9 @@ de rôles, de magasins, de produits et intégration d'un service de paiement ext
 <ul>
   <li>Node.js (v18 ou plus)</li>
   <li>npm</li>
-  <li>PostgreSQL</li>
+  <li>SQLite</li>
+  <li>Prisma (v6 car la v7 ne fonctionne pas à l'instant ou j'écris ces lignes)</li>
+  <li>csv-writer</li>
 </ul>
 
 <h3>Cloner le projet</h3>
