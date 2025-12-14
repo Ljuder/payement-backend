@@ -12,7 +12,7 @@ yarn-error.log*
 /prisma/*.db
 /prisma/*.db-journal
 generated/
-prisma/generated/
+prisma/generated
 
 # Logs
 logs/
