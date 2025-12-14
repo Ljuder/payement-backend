@@ -11,7 +11,7 @@ yarn-error.log*
 /prisma/dev.db
 /prisma/*.db
 /prisma/*.db-journal
-/generated
+generated/
 
 # Logs
 logs/
