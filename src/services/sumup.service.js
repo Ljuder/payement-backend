@@ -1,49 +1,27 @@
-import axios from "axios";
+import SumUp from "@sumup/sdk";
+import { number } from "zod";
 
-// URL de l'API SumUp
-const SUMUP_API_BASE = "https://api.sumup.com/v0.1";
+const client = new SumUp({ apiKey: process.env.SUMUP_API_KEY ?? "" });
 
-// Ces valeurs doivent être configurées dans .env
-const SUMUP_CLIENT_ID = process.env.SUMUP_CLIENT_ID;
-const SUMUP_CLIENT_SECRET = process.env.SUMUP_CLIENT_SECRET;
-const SUMUP_ACCESS_TOKEN = process.env.SUMUP_ACCESS_TOKEN; // Token admin ou merchant
-const SUMUP_REDIRECT_URL = process.env.SUMUP_REDIRECT_URL;
-
-/**
+/** 
  * Créer un checkout (paiement) SumUp
  * @param {number} amount - montant à payer
  * @param {number} userId - ID interne de l'utilisateur
- */
-export async function createCheckoutSumUp(amount, userId) {
-  try {
-    const response = await axios.post(
-      `${SUMUP_API_BASE}/checkouts`,
-      {
-        amount,
-        currency: "EUR",
-        checkout_reference: `user_${userId}_${Date.now()}`, // référence interne
-        merchant_code: process.env.SUMUP_MERCHANT_CODE,
-        pay_to_email: process.env.SUMUP_MERCHANT_EMAIL,
-        description: `Recharge wallet user ${userId}`,
-        return_url: SUMUP_REDIRECT_URL,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${SUMUP_ACCESS_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+*/
 
-    return {
-      checkoutId: response.data.id,
-      checkoutUrl: response.data.checkout_url,
-      amount: response.data.amount,
-    };
-  } catch (error) {
-    console.error("Erreur createCheckoutSumUp:", error.response?.data || error.message);
-    throw new Error("Impossible de créer le checkout SumUp");
-  }
+export async function createCheckoutSumUp(amount, userId) {
+  const checkout = await client.checkouts.create({
+    amount: Number(amount),
+    checkout_reference: `user_${userId}_${Date.now()}`,
+    currency: "EUR",
+    merchant_code: process.env.SUMUP_MERCHANT_CODE ?? "",
+    //pay_to_email: process.env.SUMUP_PAY_TO_EMAIL ?? "",
+    description: "Online payment via card widget",
+  });
+
+  console.log(checkout.id);
+  return( checkout.id );
+  // Return checkout.id to your webpage so the SumUp card widget can complete the payment.
 }
 
 /**
@@ -52,11 +30,7 @@ export async function createCheckoutSumUp(amount, userId) {
  */
 export async function getCheckoutStatusSumUp(checkoutId) {
   try {
-    const response = await axios.get(`${SUMUP_API_BASE}/checkouts/${checkoutId}`, {
-      headers: {
-        Authorization: `Bearer ${SUMUP_ACCESS_TOKEN}`,
-      },
-    });
+    const response = await client.checkouts.get(checkoutId);
 
     const { status, amount } = response.data;
 
@@ -68,21 +42,4 @@ export async function getCheckoutStatusSumUp(checkoutId) {
     console.error("Erreur getCheckoutStatusSumUp:", error.response?.data || error.message);
     throw new Error("Impossible de récupérer le statut du checkout");
   }
-}
-
-/**
- * Valider un webhook SumUp (optionnel mais recommandé)
- * @param {object} payload - payload reçu du webhook
- * @param {string} signature - header X-SumUp-Signature
- */
-export function validateWebhookSumUp(payload, signature) {
-  // Implémentation possible avec HMAC SHA256
-  // SumUp envoie la signature pour valider l'origine du webhook
-  // Voir doc SumUp : https://developer.sumup.com/docs/
-  const crypto = require("crypto");
-
-  const secret = process.env.SUMUP_WEBHOOK_SECRET;
-  const hash = crypto.createHmac("sha256", secret).update(JSON.stringify(payload)).digest("hex");
-
-  return hash === signature;
 }
